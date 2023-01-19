@@ -1,0 +1,127 @@
+	.text
+	#A[] -> $s0
+	#B[] -> $s1
+	# c -> $s2
+	# B[4] = c + A[12]	;
+	lw	$t0, 48($s0)
+	add	$t0, $s2, $t0
+	sw	$t0, 16($s1)
+
+	##################################################
+
+#	Example 2: While Loop / Array
+#	while (save[i] == k)
+#		i += 1	
+
+	#	i -> $s3, k-> $s5, base of array -> $s6
+	#
+	# $t0 for the address
+	# $t1 for the value
+	
+#	address : base address + 4 * i
+
+Loop:	
+	sll	$t0, $s3, 2	# $t0 <- 4i
+	add	$t0, $s6, $t0	# $t0 -> address of save[i]
+	lw	$t1, 0($t0)	# t1 <-- value
+	bne	$t1, $s5, exit	# if (save[i] != k exit loop)
+	addi	$s3, $s3, 1
+	j	Loop
+exit:
+
+
+	####################################################################
+
+# Print on one column the values of an array until a zero value is found.
+##########################################################################
+$t0: contains the address of the element
+$t1: contains the value of the element
+##########################################################################
+
+.data
+array: .word 55
+       .word 66
+       .word 77
+       .word 88
+       .word 0
+
+
+newline:     .asciiz	"\n"
+
+.text
+	la	$t0, array
+checkForZero:
+	lw	$t1, 0($t0)
+	beq	$t1, $zero, done
+	li	$v0, 1
+	move	$a0, $t1
+	syscall
+	li	$v0, 4
+	la	$a0, newline
+	syscall
+	addi	$t0, $t0, 4
+	j checkForZero
+done:
+	li $v0, 10
+	syscall
+###########################################################
+
+#################################################################
+# Name:
+#
+# Date:
+#
+# Program Name: YourFullName_function.s
+#
+# Description: This program illustrates how to implement a simple function call
+#
+# Pseudocode:
+#
+add_four(g,h,i,j){
+#
+#
+return f=(g+h)-(i+j);
+#
+#
+}
+#
+# Registers: s0: variable g
+#
+s1: variable h
+#
+s2: variable i
+#
+s3: variable j
+#
+s4: variable f
+#
+################################################################
+
+.data
+
+.text
+	li	$s0, 10		# g
+	li	$s1, 5		# h
+	li	$s2, 8		# i
+	li	$s3, 4		# j
+	li	$s4, 0	
+	move	$a0, $s0
+	move	$a1, $s1
+	move	$a2, $s2
+	move	$a3, $s3
+	jal	add_for
+	move	$s4, $v0
+	li	$v0, 1
+	move	$a0, $s4
+	syscall
+	li	$v0, 10
+	syscall
+add_for:
+	move	$t0, $a0	
+	move	$t1, $a1
+	move	$t2, $a2
+	move	$t3, $a3
+	add	$t0, $t0, $t1
+## Finished for extra credit
+	jr	$ra
+	

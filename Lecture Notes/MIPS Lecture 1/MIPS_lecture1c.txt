@@ -1,0 +1,74 @@
+	.text
+	# if (g < h) goto Less;
+	# g: $s0, h: $s1
+
+	slt	$t0, $s0, $s1		# $t0 <-- 1 if g < h
+					# t0 <-- 0 otherwise
+	bne	$t0, $zero, Less	# if (g < h) goto Less
+
+Less:	
+
+	#######################################################
+
+
+	# if (g >= 1) goto Loop
+
+	slti	$t0, $s0, 1		# $t0 <-- 1 if g < 1
+					# 0 if g >= 1
+	beq	$t0, $zero, Loop
+Loop:	
+
+	#######################################################
+
+	
+# while loop
+startWhile:	
+	# ---------
+	# ---------
+	# ---------
+	j startWhile
+
+	#######################################################
+
+	# int x;
+	# for (x = 0; x < 10; x++) {
+	#	printf("x=%d", x);
+	# }
+
+	######################################################
+	# Switch case
+
+	Example:
+Case / Switch Statement
+switch(k) {
+case 0: f = i + j; break;
+case 1: f = g + h; break;
+case 2: f = g – h; break;
+case 3: f = i – j; break;
+
+Example: C switch statement
+Rewrite it as a chain of if-else statements, which we already know how to compile:
+if (k == 0) f = i + j;
+   else if (k == 1) f = g + h;
+   	else if (k == 2) f = g – h;
+	     else if (k == 3) f = i – j;
+Use this mapping: f: $s0, g: $s1, h:$s2, i: $s3, j: $s4, k:$s5
+
+	
+	
+	bne	$s5, $zero, case1
+	add	$s0, $s3, $s4
+	j	done
+case1:	li	$t0, 1
+	bne	$s5, $t0, case2
+	add	$s0, $s1, $s2
+	j 	done
+case2:	li	$t0, 2
+	bne	$s5, $t0, case3
+	sub	$s0, $s1, $s2
+	j	done
+case3:	li	$t0, 3
+	bne	$s5, $t0, done
+	sub	$s0, $s3, $s4
+done:	li	$v0, 10
+	syscall

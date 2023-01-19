@@ -1,0 +1,47 @@
+# prompt user for n
+# move n to argument register
+# call fact
+# print result
+# exit
+
+fact:
+
+# prologue	allocate space in the stack;
+
+  		store arguments and return address
+
+		addi  $sp, $sp, -8
+		sw    $a0, 0($sp)
+
+		sw    $ra, 4($sp)
+		
+
+# base case	if (n == 0) return 1;
+       		li $v0, 1          or	addi $v0, $zero, 1
+		beq $a0, $zero, done
+       		
+
+# recursive case
+		else return (n * fact(n - 1))
+		addi $a0, $a0, -1 # update $a0 <-- n - 1
+		jal fact       	  # call fact
+		lw  $t0, 0($sp)	  # retrieve n from stack
+		mul $v0, $t0, $v0 # n * fact(n - 1)
+		move $s0, $v0 	  # move value into $s0 so you can print since $v0 will be overwritten
+		
+
+		
+# epilogue	retrieve the values stored in the stack
+
+  		deallocate space
+
+		return
+
+		lw	$a0, 0($sp)	# restore arg in $a0
+		lw	$ra, 4($sp)	# restore $ra
+		addi	$sp, $sp, 8	# deallocate
+		jr	$ra  	  	# return
+
+ ###################################################################
+ 
+ 
